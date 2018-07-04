@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+
+<script type="text/javascript">	
+
+/*Draw js function*/
+    
+function draw(data) {
+
+/*D3.js setup code*/
+
+"use strict";
+var margin = 25,
+width = 1400 - margin,
+height = 600 - margin;
+
+var data_1= data;
+			
+/*Chart 1- Male vs Female count*/
+
+d3.select("body")
+.append("h1").attr('style',"text-align:center")
+.text("Titanic Survivors");
+
+d3.select("body").append("h3").attr('style',"text-align:center").text("Male vs Female Passengers");
+
+d3.select("body").append("h4").attr('style',"text-align:center").text("The were 577 male and 314 female passengers aboard the titanic.");
+
+
+var s = 0;
+var p = 0;
+for (var i=0; i<data.length ;i++){
+    
+    if (data[i]['Sex'] === 'male'){
+        
+       s=s+1;}
+    
+    else
+{
+        
+       p=p+1;}
+
+}
+
+var dataset = [
+  { label: 'Male', count: s },
+  { label: 'Female', count: p }
+      ];
+
+var width1 = 500;
+var height1 = 500;
+var radius = Math.min(width1, height1) / 2;
+
+var color = d3.scaleOrdinal().range(['#FF0000', 'rgb(0, 50, 250)']);
+
+d3.select('body').append('div').attr('id', 'chart').attr('style',"text-align:center");
+var svg = d3.select('#chart')
+  .append('svg')
+  .attr('width', width1)
+  .attr('height', height1)
+  .append('g').attr('transform', 'translate(' + (width1/2) +  ',' + (height1/2) + ')');
+
+var arc = d3.arc()
+  .innerRadius(0)
+  .outerRadius(radius/2);
+
+var pie = d3.pie()
+  .value(function(d) { return d.count; })
+  .sort(null);
+
+var path = svg.selectAll('path')
+  .data(pie(dataset))
+  .enter()
+  .append('path')
+  .attr('d', arc)
+  .attr('fill', function(d, i) {
+    return color(d.data.label);
+  });
+
+d3.select("svg").attr('class','legend');
+
+ 
+var legend = d3.select('svg').append("g")
+  .attr("class","legend")
+  .attr("transform","translate(50,30)")
+  .selectAll('g').data(['Male','Female'])
+  .enter().append('g').attr('align',"middle")
+
+legend.append('circle').attr('cy', function(d,i)
+               {return i*30;})
+    .attr('r', 10)
+    .attr('fill', function(d){
+         if (d== 'Male'){
+            return '#FF0000';}
+         else {
+            return 'rgb(0, 50, 250)';
+              }});
+     
+legend.append("text").attr("y", function(d,i){
+            return i*30+7;})
+       .attr("x", 20)
+       .text(function(d){
+             return d;});                     
+
+/*
+Chart 2 - Male vs Female Survivors
+*/
+
+d3.select("body").append("h3")
+.text("Male and Female Survivors").attr('style',"text-align:center");
+
+
+
+
+
+d3.select('body').append('div').attr('id','chartContainer')
+var svg = dimple.newSvg("#chartContainer", 1400, 500);
+
+var myChart = new dimple.chart(svg, data_1);
+
+myChart.setBounds(250, 50, 750, 400);
+
+var x = myChart.addCategoryAxis("x", "Sex");
+
+myChart.addPctAxis("y", "PassengerId");
+
+myChart.addSeries("Survived", dimple.plot.bar);
+
+myChart.defaultColors = [new dimple.color("#FF0000"),new dimple.color("rgb(0, 50, 250)")];
+myChart.draw();	
+
+
+		
+d3.select("body")
+.append("h4")
+.text("This graph shows that only 20% of the male passengers survived and 74% of the Female passengers survived.").attr('style',"text-align:center");
+
+
+/*
+Chart 3 - Passenger class vs Survivors
+*/
+
+		
+		
+
+d3.select("body")
+.append("h3")
+.text("Passenger class vs Survivors").attr('style',"text-align:center");
+
+
+d3.select('body').append('div').attr('id','chartContainer2')
+var svg = dimple.newSvg("#chartContainer2", 1400, 500);
+
+var myChart2 = new dimple.chart(svg, data_1);
+
+myChart2.setBounds(250, 50, 750, 400);
+
+var x = myChart2.addCategoryAxis("x", "Pclass");
+
+myChart2.addPctAxis("y", "PassengerId");
+
+myChart2.addSeries("Survived", dimple.plot.bar);
+
+myChart2.defaultColors = [new dimple.color("#FF0000"),new dimple.color("rgb(0, 50, 250)")]; 
+myChart2.draw();	
+
+
+d3.select("body")
+.append("h4")
+.text("This graph tells us that the passengers from 1st Class had the highest survival rate compared to other classes.").attr('style',"text-align:center");
+		  
+
+/*
+Chart 4  - Survivors from various places Embarked*/
+
+	
+		
+d3.select("body")
+.append("h3")
+.text("Survivors vs Embarked places").attr('style',"text-align:center");
+
+	  
+		
+d3.select('body').append('div').attr('id','chartContainer3')
+var svg = dimple.newSvg("#chartContainer3", 1400, 500);
+	  
+var data_2 = dimple.filterData(data_1, "Embarked", ["Cherbourg", "Southampton", "Queenstown"])
+;
+		
+var myChart3 = new dimple.chart(svg, data_2);
+
+myChart3.setBounds(250, 50, 750, 400);
+
+myChart3.addCategoryAxis("x", "Embarked"); 
+			
+myChart3.addPctAxis("y", "PassengerId");
+			
+myChart3.addSeries("Survived", dimple.plot.bar);
+
+myChart3.defaultColors = [new dimple.color("#FF0000"),new dimple.color("rgb(0, 50, 250)")];	myChart3.draw();
+			
+		
+
+d3.select("body").append("h4").text("This graph shows the survival rate of passengers from different locations embarked.").attr('style',"text-align:center");				
+
+}
+</script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+/*D3 is used to load the CSV data file*/
+
+d3.csv("titanic-data.csv", draw);	
+
+		
+</script>
+  
+</body>
+</html>
